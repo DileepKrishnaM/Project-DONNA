@@ -1,5 +1,7 @@
-WAKE_WORDS = ["jarvis","donna"]
+# core/wake_word.py
 
-def is_wake_word(text : str) -> bool :
-    text = text.lower().strip()
-    return any(word in text for word in WAKE_WORDS)
+WAKE_KEYWORDS = ["friday", "jarvis", "hey jarvis", "okay jarvis", "alexa", "hey siri"]
+
+def is_wake_word(text: str) -> bool:
+    text = text.lower()
+    return any(word in text for word in WAKE_KEYWORDS)

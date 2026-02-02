@@ -13,13 +13,13 @@ def start_donna():
         if not text:
             continue
 
-        print(f"[Heard]: {text}")
+        print(f"[Heard Raw]: {text}")
 
         if is_wake_word(text):
             print("[DONNA] Wake word detected")
 
             # 2️⃣ Speak response (NO listening here)
-            speak("Yes?")
+            speak("Yes sir?")
             time.sleep(0.6)
 
             # 3️⃣ Listen for command (separate phase)
