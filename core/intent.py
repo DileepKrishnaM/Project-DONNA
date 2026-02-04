@@ -3,6 +3,14 @@
 def parse_intent(command: str):
     command = command.lower()
 
+    if "whatsapp" in command and "send" in command:
+    # expected: send whatsapp message to <name> saying <message>
+        if "saying" in command:
+            parts = command.split("saying")
+            message = parts[1].strip()
+            return ("send_whatsapp", message)
+        return ("send_whatsapp", None)
+
     if any(word in command for word in ["open", "launch", "start"]):
         if "chrome" in command:
             return ("open_app", "chrome")
