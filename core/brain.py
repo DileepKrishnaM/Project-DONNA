@@ -26,7 +26,7 @@ def process(command: str):
     
     elif intent == "send_whatsapp":
         if data:
-            phone_number = "+918309138662"
+            phone_number = "+91xxxxxxxxxx"
             speak("Sending WhatsApp message.")
             send_whatsapp_message(phone_number, data)
         else:
