@@ -4,7 +4,7 @@ from core.intent import parse_intent
 from commands.system import open_chrome, exit_donna
 from commands.web import search_web
 from commands.whatsapp import send_whatsapp_message
-
+from core.contacts import get_contact_number
 
 def process(command: str):
     intent, data = parse_intent(command)
@@ -25,12 +25,20 @@ def process(command: str):
         exit_donna()
     
     elif intent == "send_whatsapp":
-        if data:
-            phone_number = "+91xxxxxxxxxx"
-            speak("Sending WhatsApp message.")
-            send_whatsapp_message(phone_number, data)
+        if data and data.get("name") and data.get("message"):
+            contact_name = data["name"]
+            message = data["message"]
+
+            phone_number = get_contact_number(contact_name)
+
+            if phone_number:
+                speak(f"Sending WhatsApp message to {contact_name}.")
+                send_whatsapp_message(phone_number, message)
+            else:
+                speak(f"I do not have a contact named {contact_name}.")
         else:
-            speak("What message should I send?")
+            speak("Please tell me whom to message and what to say.")
+
     
     else:
         speak("I did not understand that command.")
