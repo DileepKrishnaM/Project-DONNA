@@ -31,6 +31,18 @@ def parse_intent(command: str):
                 })
             except:
                 return ("send_whatsapp", None)
+        
+    play_keywords = ["play", "listen to"]
+    if any(word in command for word in play_keywords):
+        cleaned = command
+        for word in ["play", "listen to"]:
+            cleaned = cleaned.replace(word, "")
+        song = cleaned.strip()
+
+        if song:
+            return ("play_music", song)
+        else:
+            return ("play_music", "music")
 
     # ---- EXIT ----
     if any(word in command for word in ["exit", "quit", "stop"]):

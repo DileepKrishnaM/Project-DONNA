@@ -5,6 +5,8 @@ from commands.system import open_chrome, exit_donna
 from commands.web import search_web
 from commands.whatsapp import send_whatsapp_message
 from core.contacts import get_contact_number
+from commands.media import play_song
+
 
 def process(command: str):
     intent, data = parse_intent(command)
@@ -20,9 +22,9 @@ def process(command: str):
         else:
             speak("What should I search for?")
 
-    elif intent == "exit":
-        speak("Shutting down. Goodbye.")
-        exit_donna()
+    elif intent == "play_music":
+        speak(f"Playing {data}")
+        play_song(data)
     
     elif intent == "send_whatsapp":
         if data and data.get("name") and data.get("message"):
@@ -39,6 +41,9 @@ def process(command: str):
         else:
             speak("Please tell me whom to message and what to say.")
 
+    elif intent == "exit":
+        speak("Shutting down. Goodbye.")
+        exit_donna()
     
     else:
         speak("I did not understand that command.")
