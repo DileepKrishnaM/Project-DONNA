@@ -57,6 +57,15 @@ def parse_intent(command: str):
     if "battery" in command:
         return ("get_battery", None)
 
+    # ---- REMINDER ADD ----
+    if "remind me to" in command:
+        reminder_text = command.split("remind me to", 1)[1].strip()
+        return ("add_reminder", reminder_text)
+
+    # ---- REMINDER LIST ----
+    if "my reminders" in command or "my tasks" in command:
+        return ("list_reminders", None)
+
 
     # ---- EXIT ----
     if any(word in command for word in ["exit", "quit", "stop"]):

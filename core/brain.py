@@ -7,7 +7,7 @@ from commands.whatsapp import send_whatsapp_message
 from core.contacts import get_contact_number
 from commands.media import play_song
 from commands.system_info import get_time, get_date, get_battery
-
+from commands.reminder import add_reminder, get_reminders
 
 
 def process(command: str):
@@ -56,6 +56,25 @@ def process(command: str):
 
     elif intent == "get_battery":
         speak(get_battery())
+
+    # ---- REMINDER ADD ----
+    elif intent == "add_reminder":
+        if data:
+            add_reminder(data)
+            speak("Reminder saved.")
+        else:
+            speak("What should I remind you about?")
+
+   # ---- REMINDER LIST ----
+    elif intent == "list_reminders":
+        reminders = get_reminders()
+        if reminders:
+            speak("Here are your reminders.")
+            for r in reminders[:5]:
+                speak(r)
+        else:
+            speak("You have no reminders.")
+
 
     # ---- EXIT ----
     elif intent == "exit":
