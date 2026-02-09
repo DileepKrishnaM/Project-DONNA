@@ -66,6 +66,11 @@ def parse_intent(command: str):
     if "my reminders" in command or "my tasks" in command:
         return ("list_reminders", None)
 
+    # ---- ALARM ----
+    if "set alarm for" in command:
+        time_text = command.split("set alarm for", 1)[1].strip()
+        return ("set_alarm", time_text)
+
 
     # ---- EXIT ----
     if any(word in command for word in ["exit", "quit", "stop"]):

@@ -3,9 +3,14 @@ from core.listener import listen
 from core.speaker import speak
 from core.wake_word import is_wake_word
 from core.brain import process
+import threading
+from commands.alarm import check_alarms
+
 
 def start_jarvis():
     speak("Jarvis is online.")
+    alarm_thread = threading.Thread(target=check_alarms, args=(speak,), daemon=True)
+    alarm_thread.start()
 
     while True:
         # Idle mode: listen only for wake word

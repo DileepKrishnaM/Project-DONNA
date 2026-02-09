@@ -8,6 +8,7 @@ from core.contacts import get_contact_number
 from commands.media import play_song
 from commands.system_info import get_time, get_date, get_battery
 from commands.reminder import add_reminder, get_reminders
+from commands.alarm import add_alarm
 
 
 def process(command: str):
@@ -74,6 +75,14 @@ def process(command: str):
                 speak(r)
         else:
             speak("You have no reminders.")
+
+    # ---- ALARM ----
+    elif intent == "set_alarm":
+        if data:
+            add_alarm(data)
+            speak(f"Alarm set for {data}")
+        else:
+            speak("Please tell me the alarm time.")
 
 
     # ---- EXIT ----
