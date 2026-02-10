@@ -71,6 +71,10 @@ def parse_intent(command: str):
         time_text = command.split("set alarm for", 1)[1].strip()
         return ("set_alarm", time_text)
 
+    # ---- CANCEL ALARM ----
+    if "cancel alarm" in command or "clear alarms" in command:
+        return ("clear_alarms", None)
+
 
     # ---- EXIT ----
     if any(word in command for word in ["exit", "quit", "stop"]):

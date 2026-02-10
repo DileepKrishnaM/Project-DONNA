@@ -50,3 +50,7 @@ def check_alarms(speak):
             pass
 
         time.sleep(1)
+
+def clear_alarms():
+    with open(ALARM_FILE, "w", encoding="utf-8") as f:
+        f.write("")
