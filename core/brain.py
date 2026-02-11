@@ -9,6 +9,7 @@ from commands.media import play_song
 from commands.system_info import get_time, get_date, get_battery
 from commands.reminder import add_reminder, get_reminders
 from commands.alarm import add_alarm, clear_alarms
+from commands.volume import increase_volume, decrease_volume, mute_volume
 
 
 def process(command: str):
@@ -31,7 +32,21 @@ def process(command: str):
     elif intent == "play_music":
         speak(f"Playing {data}")
         play_song(data)
-    
+
+    # ---- VOLUME CONTROL ----    
+    elif intent == "volume_up":
+        speak("Increasing volume.")
+        increase_volume()
+
+    elif intent == "volume_down":
+        speak("Decreasing volume.")
+        decrease_volume()
+
+    elif intent == "volume_mute":
+        speak("Muting volume.")
+        mute_volume()
+
+
     # ---- WHATSAPP ----
     elif intent == "send_whatsapp":
         if data and data.get("name") and data.get("message"):

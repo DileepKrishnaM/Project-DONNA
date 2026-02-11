@@ -45,6 +45,17 @@ def parse_intent(command: str):
         else:
             return ("play_music", "music")
         
+    # ---- VOLUME CONTROL ----
+    if "increase volume" in command or "volume up" in command:
+        return ("volume_up", None)
+
+    if "decrease volume" in command or "volume down" in command:
+        return ("volume_down", None)
+
+    if "mute" in command:
+        return ("volume_mute", None)
+
+
     # ---- TIME ----
     if "time" in command:
         return ("get_time", None)
