@@ -1,7 +1,7 @@
 # core/brain.py
 from core.speaker import speak
 from core.intent import parse_intent
-from commands.system import open_chrome, exit_donna
+from commands.system import open_application, close_application, exit_donna
 from commands.web import search_web
 from commands.whatsapp import send_whatsapp_message
 from core.contacts import get_contact_number
@@ -16,9 +16,24 @@ def process(command: str):
     intent, data = parse_intent(command)
 
     # ---- OPEN APPLICATION ----
-    if intent == "open_app" and data == "chrome":
-        speak("Opening Chrome")
-        open_chrome()
+    if intent == "open_app":
+        if data:
+            success = open_application(data)
+            if success:
+                speak(f"Opening {data}")
+            else:
+                speak("I couldn't open that application.")
+
+
+    # ---- CLOSE APPLICATION ----
+    elif intent == "close_app":
+        if data:
+            success = close_application(data)
+            if success:
+                speak(f"Closing {data}")
+            else:
+                speak("I couldn't find that application running.")
+
 
     # ---- SEARCH WEB ----
     elif intent == "search_web":
