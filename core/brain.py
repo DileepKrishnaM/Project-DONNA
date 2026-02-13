@@ -27,12 +27,11 @@ def process(command: str):
 
     # ---- CLOSE APPLICATION ----
     elif intent == "close_app":
-        if data:
-            success = close_application(data)
-            if success:
-                speak(f"Closing {data}")
-            else:
-                speak("I couldn't find that application running.")
+        success = close_application(data)
+        if success:
+            speak(f"Closing {data}")
+        else:
+            speak("I could not close that application.")
 
 
     # ---- SEARCH WEB ----

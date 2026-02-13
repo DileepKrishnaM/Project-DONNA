@@ -1,0 +1,47 @@
+{
+  "chrome": {
+    "open": "start chrome",
+    "process": "chrome.exe",
+    "aliases": ["google chrome"]
+  },
+  "notepad": {
+    "open": "start notepad",
+    "process": "notepad.exe",
+    "aliases": ["note pad"]
+  },
+  "vscode": {
+    "open": "start code",
+    "process": "Code.exe",
+    "aliases": ["vs code", "visual studio code"]
+  },
+  "explorer": {
+    "open": "start explorer",
+    "process": "explorer.exe",
+    "aliases": ["file explorer"]
+  },
+  "calculator": {
+    "open": "start calc",
+    "process": "calc.exe",
+    "aliases": ["calculator"]
+  },
+  "taskmgr": {
+    "open": "start taskmgr",
+    "process": "taskmgr.exe",
+    "aliases": ["task manager"]
+  },
+  "controlpanel": {
+    "open": "start control panel",
+    "process": "control.exe",
+    "aliases": ["control panel"]
+  },
+  "mspaint": {
+    "open": "start mspaint",
+    "process": "mspaint.exe",
+    "aliases": ["paint"]
+  },
+  "cmd": {
+    "open": "start cmd",
+    "process": "cmd.exe",
+    "aliases": ["command prompt", "cmd"]
+  }
+}

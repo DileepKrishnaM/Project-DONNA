@@ -88,19 +88,15 @@ def parse_intent(command: str):
 
     # ---- OPEN APPLICATION ----
     open_keywords = ["open", "launch", "start", "run"]
-    apps_supported = ["chrome", "notepad", "calculator", "paint"]
-
-    if any(word in command for word in open_keywords):
-        for app in apps_supported:
-            if app in command:
-                return ("open_app", app)
+    for keyword in open_keywords:
+        if keyword in command:
+            app_name = command.split(keyword, 1)[1].strip()
+            return ("open_app", app_name)
 
     # ---- CLOSE APPLICATION ----
     if "close" in command:
-        words = command.split()
-        if len(words) > 1:
-            app_name = words[-1]
-            return ("close_app", app_name)
+        app_name = command.split("close", 1)[1].strip()
+        return ("close_app", app_name)
 
 
     # ---- EXIT ----
