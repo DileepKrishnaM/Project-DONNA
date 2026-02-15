@@ -1,5 +1,8 @@
 # core/intent.py
 
+from click import command
+
+
 def parse_intent(command: str):
     command = command.lower()
 
@@ -86,6 +89,18 @@ def parse_intent(command: str):
     if "cancel alarm" in command or "clear alarms" in command:
         return ("clear_alarms", None)
 
+    # ---- CANCEL SHUTDOWN / RESTART ----
+    if "cancel shutdown" in command or "abort shutdown" in command or "cancel restart" in command:
+        return ("cancel_shutdown", None)
+    
+    # ---- RESTART ----
+    if "restart" in command or "reboot" in command:
+        return ("restart", None)
+
+    # ---- SHUTDOWN ----
+    if "shutdown" in command or "shut down" in command:
+        return ("shutdown", None)
+    
     # ---- OPEN APPLICATION ----
     open_keywords = ["open", "launch", "start", "run"]
     for keyword in open_keywords:

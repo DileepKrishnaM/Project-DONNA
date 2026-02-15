@@ -46,7 +46,14 @@ def close_application(app_name: str):
 
     return False
 
-
-
 def exit_donna():
     exit()
+
+def shutdown_computer():
+    os.system("shutdown /s /t 60")
+
+def restart_computer():
+    os.system("shutdown /r /t 60")
+
+def cancel_shutdown():
+    os.system("shutdown /a")

@@ -10,6 +10,7 @@ from commands.system_info import get_time, get_date, get_battery
 from commands.reminder import add_reminder, get_reminders
 from commands.alarm import add_alarm, clear_alarms
 from commands.volume import increase_volume, decrease_volume, mute_volume
+from commands.system import shutdown_computer, restart_computer, cancel_shutdown
 
 
 def process(command: str):
@@ -124,6 +125,20 @@ def process(command: str):
         speak("Shutting down. Goodbye.")
         exit_donna()
     
+    
+    elif intent == "shutdown":
+        speak("Shutting down the computer in 1 minute.")
+        shutdown_computer()
+
+    elif intent == "restart":
+        speak("Restarting the computer in 1 minute.")
+        restart_computer()
+
+    elif intent == "cancel_shutdown":
+        cancel_shutdown()
+        speak("Shutdown cancelled.")
+
+
     else:
         speak("I did not understand that command.")
     
