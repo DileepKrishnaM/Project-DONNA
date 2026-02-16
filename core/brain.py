@@ -138,6 +138,11 @@ def process(command: str):
         cancel_shutdown()
         speak("Shutdown cancelled.")
 
+    elif intent == "help":
+        speak("I can open and close applications, search the web, play music, "
+            "send WhatsApp messages, set reminders and alarms, control volume, "
+            "and provide system information like time, date, and battery.")
+
 
     else:
         speak("I did not understand that command.")

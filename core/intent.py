@@ -113,6 +113,9 @@ def parse_intent(command: str):
         app_name = command.split("close", 1)[1].strip()
         return ("close_app", app_name)
 
+    # ---- HELP ----
+    if "help" in command or "what can you do" in command:
+        return ("help", None)
 
     # ---- EXIT ----
     if any(word in command for word in ["exit", "quit", "stop"]):
