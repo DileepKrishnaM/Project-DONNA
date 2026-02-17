@@ -117,6 +117,13 @@ def parse_intent(command: str):
     if "help" in command or "what can you do" in command:
         return ("help", None)
 
+    # ---- KNOWLEDGE ----
+    knowledge_keywords = ["who is", "what is", "tell me about", "define"]
+    for keyword in knowledge_keywords:
+        if keyword in command:
+            query = command.split(keyword, 1)[1].strip()
+            return ("knowledge", query)
+    
     # ---- EXIT ----
     if any(word in command for word in ["exit", "quit", "stop"]):
         return ("exit", None)
