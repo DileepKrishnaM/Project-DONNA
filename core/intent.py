@@ -124,8 +124,12 @@ def parse_intent(command: str):
             query = command.split(keyword, 1)[1].strip()
             return ("knowledge", query)
     
-    # ---- EXIT ----
-    if any(word in command for word in ["exit", "quit", "stop"]):
+    # ---- STOP LISTENING (conversation mode) ----
+    if "stop listening" in command or "go to sleep" in command:
+        return ("stop_listening", None)
+
+    # ---- EXIT PROGRAM ----
+    if command.strip() in ["exit", "quit"]:
         return ("exit", None)
 
     return ("unknown", None)

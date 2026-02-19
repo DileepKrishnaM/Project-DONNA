@@ -154,6 +154,11 @@ def process(command: str):
         else:
             speak("What would you like to know?")
 
+    # ---- STOP LISTENING (conversation mode) ----
+    elif intent == "stop_listening":
+        speak("Going back to sleep.")
+        return "sleep"
+
     else:
         speak("I did not understand that command.")
     

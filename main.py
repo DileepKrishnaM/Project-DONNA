@@ -9,31 +9,54 @@ from commands.alarm import check_alarms
 
 def start_jarvis():
     speak("Jarvis is online.")
-    alarm_thread = threading.Thread(target=check_alarms, args=(speak,), daemon=True)
+
+    # Start alarm background thread
+    alarm_thread = threading.Thread(
+        target=check_alarms,
+        args=(speak,),
+        daemon=True
+    )
     alarm_thread.start()
 
+    active_mode = False  # conversation state
+
     while True:
-        # Idle mode: listen only for wake word
-        text = listen(timeout=10)
-        if not text:
+
+        # IDLE MODE (Wake Word)
+        if not active_mode:
+            text = listen(timeout=10)
+
+            if not text:
+                continue
+
+            print(f"[Heard]: {text}")
+
+            if is_wake_word(text):
+                print("[JARVIS] Wake word detected")
+                speak("Yes?")
+                active_mode = True
+
             continue
 
-        print(f"[Heard]: {text}")
+        # ACTIVE MODE (Multiple Commands)
+        command = listen(timeout=8)
 
-        if is_wake_word(text):
-            print("[JARVIS] Wake word detected")
-            speak("Yes?")
-
-            # Command mode: listen ONCE for command
-            command = listen(timeout=6)
-
-            if command:
-                print(f"[Command]: {command}")
-                process(command)
-            else:
-                speak("I did not hear any command.")
-
+        # If silence → go back to idle
+        if not command:
+            speak("Going back to sleep.")
+            active_mode = False
             print("[JARVIS] Returning to idle")
+            continue
+
+        print(f"[Command]: {command}")
+
+        result = process(command)
+
+        # stop listening command
+        if result == "sleep":
+            active_mode = False
+            print("[JARVIS] Returning to idle")
+
 
 if __name__ == "__main__":
     start_jarvis()
