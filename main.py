@@ -5,6 +5,7 @@ from core.wake_word import is_wake_word
 from core.brain import process
 import threading
 from commands.alarm import check_alarms
+import time
 
 
 def start_jarvis():
@@ -19,6 +20,9 @@ def start_jarvis():
     alarm_thread.start()
 
     active_mode = False  # conversation state
+
+    IDLE_TIMEOUT = 20  # seconds
+    last_active_time = time.time()
 
     while True:
 
@@ -35,11 +39,18 @@ def start_jarvis():
                 print("[JARVIS] Wake word detected")
                 speak("Yes?")
                 active_mode = True
-
+                last_active_time = time.time()
             continue
 
         # ACTIVE MODE (Multiple Commands)
         command = listen(timeout=8)
+
+        # inactivity timeout check
+        if time.time() - last_active_time > IDLE_TIMEOUT:
+            speak("Going back to sleep.")
+            active_mode = False
+            print("[JARVIS] Auto sleep triggered")
+            continue
 
         # If silence → go back to idle
         if not command:
@@ -49,6 +60,7 @@ def start_jarvis():
             continue
 
         print(f"[Command]: {command}")
+        last_active_time = time.time()
 
         result = process(command)
 
