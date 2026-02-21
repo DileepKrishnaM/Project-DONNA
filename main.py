@@ -19,14 +19,15 @@ def start_jarvis():
     )
     alarm_thread.start()
 
-    active_mode = False  # conversation state
+    # Conversation state
+    active_mode = False
 
+    # Idle timeout settings
     IDLE_TIMEOUT = 20  # seconds
     last_active_time = time.time()
 
     while True:
-
-        # IDLE MODE (Wake Word)
+        # IDLE MODE (Waiting for wake word)
         if not active_mode:
             text = listen(timeout=10)
 
@@ -40,31 +41,34 @@ def start_jarvis():
                 speak("Yes?")
                 active_mode = True
                 last_active_time = time.time()
+
             continue
 
-        # ACTIVE MODE (Multiple Commands)
-        command = listen(timeout=8)
+        # ACTIVE MODE (Conversation Mode)
 
-        # inactivity timeout check
+        # Auto sleep after inactivity
         if time.time() - last_active_time > IDLE_TIMEOUT:
             speak("Going back to sleep.")
             active_mode = False
             print("[JARVIS] Auto sleep triggered")
             continue
 
-        # If silence → go back to idle
+        # Listen for next command
+        command = listen(timeout=8)
+
+        # Silence → keep waiting until timeout
         if not command:
-            speak("Going back to sleep.")
-            active_mode = False
-            print("[JARVIS] Returning to idle")
             continue
 
         print(f"[Command]: {command}")
+
+        # Reset activity timer
         last_active_time = time.time()
 
+        # Process command
         result = process(command)
 
-        # stop listening command
+        # Manual sleep command
         if result == "sleep":
             active_mode = False
             print("[JARVIS] Returning to idle")

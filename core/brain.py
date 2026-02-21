@@ -1,7 +1,14 @@
 # core/brain.py
 from core.speaker import speak
 from core.intent import parse_intent
-from commands.system import open_application, close_application, exit_donna
+from commands.system import (
+    open_application,
+    close_application,
+    exit_donna,
+    shutdown_computer,
+    restart_computer,
+    cancel_shutdown
+)
 from commands.web import search_web
 from commands.whatsapp import send_whatsapp_message
 from core.contacts import get_contact_number
@@ -10,12 +17,34 @@ from commands.system_info import get_time, get_date, get_battery
 from commands.reminder import add_reminder, get_reminders
 from commands.alarm import add_alarm, clear_alarms
 from commands.volume import increase_volume, decrease_volume, mute_volume
-from commands.system import shutdown_computer, restart_computer, cancel_shutdown
 from commands.knowledge import get_summary
 
+# Confirmation Memory
+pending_action = None
 
 def process(command: str):
+    global pending_action
+
     intent, data = parse_intent(command)
+    command_lower = command.lower().strip()
+
+    # CONFIRMATION RESPONSE
+    if pending_action:
+
+        if any(word in command_lower for word in ["yes", "confirm", "do it", "sure", "okay"]):
+            action = pending_action
+            pending_action = None
+            action()
+            return
+
+        elif any(word in command_lower for word in ["no", "cancel", "stop"]):
+            pending_action = None
+            speak("Cancelled.")
+            return
+
+        else:
+            speak("Please say yes or no.")
+            return
 
     # ---- OPEN APPLICATION ----
     if intent == "open_app":
@@ -26,15 +55,19 @@ def process(command: str):
             else:
                 speak("I couldn't open that application.")
 
-
-    # ---- CLOSE APPLICATION ----
+    # ---- CLOSE APPLICATION (CONFIRMATION) ----
     elif intent == "close_app":
-        success = close_application(data)
-        if success:
-            speak(f"Closing {data}")
-        else:
-            speak("I could not close that application.")
 
+        def action():
+            success = close_application(data)
+            if success:
+                speak(f"Closing {data}")
+            else:
+                speak("I could not close that application.")
+
+        speak(f"Are you sure you want to close {data}?")
+        pending_action = action
+        return
 
     # ---- SEARCH WEB ----
     elif intent == "search_web":
@@ -49,7 +82,7 @@ def process(command: str):
         speak(f"Playing {data}")
         play_song(data)
 
-    # ---- VOLUME CONTROL ----    
+    # ---- VOLUME CONTROL ----
     elif intent == "volume_up":
         speak("Increasing volume.")
         increase_volume()
@@ -61,7 +94,6 @@ def process(command: str):
     elif intent == "volume_mute":
         speak("Muting volume.")
         mute_volume()
-
 
     # ---- WHATSAPP ----
     elif intent == "send_whatsapp":
@@ -78,8 +110,8 @@ def process(command: str):
                 speak(f"I do not have a contact named {contact_name}.")
         else:
             speak("Please tell me whom to message and what to say.")
-    
-    # --- SYSTEM INFO ----
+
+    # ---- SYSTEM INFO ----
     elif intent == "get_time":
         speak(f"The time is {get_time()}")
 
@@ -89,7 +121,7 @@ def process(command: str):
     elif intent == "get_battery":
         speak(get_battery())
 
-    # ---- REMINDER ADD ----
+    # ---- REMINDERS ----
     elif intent == "add_reminder":
         if data:
             add_reminder(data)
@@ -97,7 +129,6 @@ def process(command: str):
         else:
             speak("What should I remind you about?")
 
-   # ---- REMINDER LIST ----
     elif intent == "list_reminders":
         reminders = get_reminders()
         if reminders:
@@ -107,7 +138,7 @@ def process(command: str):
         else:
             speak("You have no reminders.")
 
-    # ---- ALARM ----
+    # ---- ALARMS ----
     elif intent == "set_alarm":
         if data:
             add_alarm(data)
@@ -115,25 +146,21 @@ def process(command: str):
         else:
             speak("Please tell me the alarm time.")
 
-    # ---- CANCEL ALARM ----
     elif intent == "clear_alarms":
         clear_alarms()
         speak("All alarms have been cleared.")
 
-
-    # ---- EXIT ----
-    elif intent == "exit":
-        speak("Shutting down. Goodbye.")
-        exit_donna()
-    
-    # --- SHUTDOWN/RESTART ----
+    # ---- SHUTDOWN (CONFIRMATION) ----
     elif intent == "shutdown":
-        speak("Shutting down the computer in 1 minute.")
-        shutdown_computer()
+        speak("Are you sure you want to shut down?")
+        pending_action = shutdown_computer
+        return
 
+    # ---- RESTART (CONFIRMATION) ----
     elif intent == "restart":
-        speak("Restarting the computer in 1 minute.")
-        restart_computer()
+        speak("Are you sure you want to restart?")
+        pending_action = restart_computer
+        return
 
     elif intent == "cancel_shutdown":
         cancel_shutdown()
@@ -141,9 +168,11 @@ def process(command: str):
 
     # ---- HELP ----
     elif intent == "help":
-        speak("I can open and close applications, search the web, play music, "
+        speak(
+            "I can open and close applications, search the web, play music, "
             "send WhatsApp messages, set reminders and alarms, control volume, "
-            "and provide system information like time, date, and battery.")
+            "and provide system information like time, date, and battery."
+        )
 
     # ---- KNOWLEDGE ----
     elif intent == "knowledge":
@@ -154,11 +183,15 @@ def process(command: str):
         else:
             speak("What would you like to know?")
 
-    # ---- STOP LISTENING (conversation mode) ----
+    # ---- STOP LISTENING ----
     elif intent == "stop_listening":
         speak("Going back to sleep.")
         return "sleep"
 
+    # ---- EXIT PROGRAM ----
+    elif intent == "exit":
+        speak("Shutting down. Goodbye.")
+        exit_donna()
+
     else:
         speak("I did not understand that command.")
-    
