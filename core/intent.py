@@ -6,6 +6,10 @@ from click import command
 def parse_intent(command: str):
     command = command.lower()
 
+    # ---- IDENTITY ----
+    if "who are you" in command or "introduce yourself" in command:
+        return ("identity", None)
+
     # ---- OPEN APPLICATION ----
     open_keywords = ["open", "launch", "start", "run"]
     if any(word in command for word in open_keywords):

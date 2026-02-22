@@ -19,6 +19,9 @@ from commands.alarm import add_alarm, clear_alarms
 from commands.volume import increase_volume, decrease_volume, mute_volume
 from commands.knowledge import get_summary
 
+IDENTITY_TEXT = (
+    "I am Jarvis the robo. Speed 1 tera hertz, memory 1 zeta byte."
+)
 # Confirmation Memory
 pending_action = None
 
@@ -45,6 +48,7 @@ def process(command: str):
         else:
             speak("Please say yes or no.")
             return
+
 
     # ---- OPEN APPLICATION ----
     if intent == "open_app":
@@ -192,6 +196,10 @@ def process(command: str):
     elif intent == "exit":
         speak("Shutting down. Goodbye.")
         exit_donna()
+
+    # ---- IDENTITY ----
+    elif intent == "identity":
+        speak(IDENTITY_TEXT)
 
     else:
         speak("I did not understand that command.")
