@@ -128,6 +128,10 @@ def parse_intent(command: str):
             query = command.split(keyword, 1)[1].strip()
             return ("knowledge", query)
     
+    # ---- CONTEXT FOLLOWUP ----
+    if "tell me more" in command or "more about" in command:
+        return ("context_more", None)
+    
     # ---- STOP LISTENING (conversation mode) ----
     if "stop listening" in command or "go to sleep" in command:
         return ("stop_listening", None)

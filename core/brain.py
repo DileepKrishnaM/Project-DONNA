@@ -25,8 +25,11 @@ IDENTITY_TEXT = (
 # Confirmation Memory
 pending_action = None
 
+# Short-term memory
+last_topic = None
+
 def process(command: str):
-    global pending_action
+    global pending_action, last_topic
 
     intent, data = parse_intent(command)
     command_lower = command.lower().strip()
@@ -181,11 +184,21 @@ def process(command: str):
     # ---- KNOWLEDGE ----
     elif intent == "knowledge":
         if data:
+            last_topic = data  # remember topic
             speak("Let me check.")
             answer = get_summary(data)
             speak(answer)
         else:
             speak("What would you like to know?")
+
+    # ---- CONTEXT FOLLOWUP ----
+    elif intent == "context_more":
+        if last_topic:
+            speak(f"Here is more about {last_topic}.")
+            answer = get_summary(last_topic)
+            speak(answer)
+        else:
+            speak("I don't know what topic you are referring to.")
 
     # ---- STOP LISTENING ----
     elif intent == "stop_listening":
