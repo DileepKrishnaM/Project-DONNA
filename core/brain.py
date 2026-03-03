@@ -25,11 +25,13 @@ IDENTITY_TEXT = (
 # Confirmation Memory
 pending_action = None
 
-# Short-term memory
+# Short-term knowledge memory
 last_topic = None
+topic_sentences = []
+topic_index = 0
 
 def process(command: str):
-    global pending_action, last_topic
+    global pending_action, last_topic, topic_sentences, topic_index
 
     intent, data = parse_intent(command)
     command_lower = command.lower().strip()
@@ -184,21 +186,41 @@ def process(command: str):
     # ---- KNOWLEDGE ----
     elif intent == "knowledge":
         if data:
-            last_topic = data  # remember topic
-            speak("Let me check.")
-            answer = get_summary(data)
-            speak(answer)
+            import wikipedia
+
+            last_topic = data
+            topic_index = 0
+
+            try:
+                page = wikipedia.page(data)
+                full_text = page.content
+
+                # Split into sentences
+                topic_sentences = full_text.split(". ")
+
+                speak("Let me check.")
+
+                # Speak first 2 sentences
+                chunk = ". ".join(topic_sentences[:2])
+                topic_index = 2
+                speak(chunk)
+
+            except Exception:
+                speak("I couldn't find information on that topic.")
+
         else:
             speak("What would you like to know?")
 
     # ---- CONTEXT FOLLOWUP ----
     elif intent == "context_more":
-        if last_topic:
-            speak(f"Here is more about {last_topic}.")
-            answer = get_summary(last_topic)
-            speak(answer)
+        if topic_sentences and topic_index < len(topic_sentences):
+            next_chunk = ". ".join(
+                topic_sentences[topic_index: topic_index + 2]
+            )
+            topic_index += 2
+            speak(next_chunk)
         else:
-            speak("I don't know what topic you are referring to.")
+            speak("I have no more information on that topic.")
 
     # ---- STOP LISTENING ----
     elif intent == "stop_listening":
